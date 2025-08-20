@@ -50,3 +50,15 @@ Criar instância quântica (QuantumInstance) e rodar QAOA.
 Obter resultados: ativos selecionados e valor da função objetivo.
 
 Visualizar resultados com gráfico de barras.
+
+Exemplo de saída:
+Ativos selecionados pelo QAOA: ['ITUB4.SA', 'ABEV3.SA']
+Valor ótimo da função objetivo: -0.00264
+Ativos selecionados (clássico): ['ITUB4.SA', 'ABEV3.SA']
+Gráfico de barras: mostra visualmente quais ativos foram escolhidos pelo algoritmo quântico.
+
+🔹 O que esse projeto mostra
+Aplicação prática de computação quântica em finanças.
+Como transformar problemas financeiros em QUBOs binários.
+Comparação entre resultados clássicos e quânticos.
+Base para exploração de carteiras maiores, ajustes de risco e retornos, e algoritmos quânticos mais avançados.
