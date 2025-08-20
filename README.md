@@ -1,0 +1,1 @@
+# Projeto-Qu-ntico-Otimiza-o-de-Portf-lio-via-QAOA
