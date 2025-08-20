@@ -1,4 +1,4 @@
-# Projeto-Qu-ntico-Otimiza-o-de-Portf-lio-via-QAOA
+# Projeto Quântico: Otimização de Portfólio via QAOA
 
 Otimização de Portfólio com QAOA (Qiskit)
 
