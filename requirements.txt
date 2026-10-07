@@ -1,0 +1,26 @@
+# Scientific & Quantum Optimization Lab — dependências
+# Testado com Python 3.10.8 em 2026-10-06/07.
+#
+# IMPORTANTE (bug real encontrado nesta sessão): não misture qiskit <1.0
+# (qiskit-terra) com pacotes que exigem qiskit >=1.0 no mesmo ambiente —
+# o import falha com "Qiskit is installed in an invalid environment".
+# Se for instalar em outro ambiente, use um venv limpo.
+
+numpy>=2.2,<3
+scipy>=1.15,<2
+pandas>=2.2,<3
+matplotlib>=3.9,<4
+
+# Otimização clássica (LP/MILP/estocástico/Benders)
+pyomo>=6.10,<7
+highspy>=1.15,<2
+ortools>=9.11,<10
+
+# Computação quântica (QUBO/QAOA)
+qiskit>=1.4,<2
+qiskit-aer>=0.17,<1
+qiskit-optimization>=0.7,<1
+qiskit-algorithms>=0.4,<1
+
+# Testes
+pytest>=9.0,<10
