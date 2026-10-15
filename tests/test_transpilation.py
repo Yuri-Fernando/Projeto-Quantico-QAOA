@@ -47,3 +47,18 @@ def test_transpilation_is_reproducible_with_same_seed():
     _, b = transpile_with_metrics(_circuit(n=6), backend, optimization_level=2, seed_transpiler=11)
     for key in ("depth_physical", "two_qubit_gates_physical", "swap_count", "initial_layout"):
         assert a[key] == b[key]
+
+
+def test_layout_is_recovered_when_qiskit_initial_index_layout_fails():
+    """Regressão: Qiskit 1.4.6 levanta IndexError em initial_index_layout(filter_ancillas=True) neste caso."""
+    from optimization.instance import generate_portfolio_instance as gen
+    from quantum.runner import initial_point
+
+    problem = gen(8, seed=0).to_problem()
+    qc = bind(build_qaoa_circuit(problem.penalized_qubo().to_ising(), 2, measure=True),
+              initial_point("linear_ramp", 2, None))
+    _, m = transpile_with_metrics(qc, get_fake_backend("generic_heavyhex_d3"), optimization_level=1,
+                                  seed_transpiler=0)
+    assert m["target_supported"]
+    assert len(m["initial_layout"]) == 8 and None not in m["initial_layout"]
+    assert len(set(m["initial_layout"])) == 8

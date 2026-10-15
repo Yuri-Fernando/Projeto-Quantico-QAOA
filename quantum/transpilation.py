@@ -57,6 +57,27 @@ def target_check(circuit: QuantumCircuit, backend) -> tuple[bool, list]:
     return (not bad), bad[:10]
 
 
+def _layouts(isa: QuantumCircuit, n_logical: int) -> tuple[list | None, list | None]:
+    """``(inicial, final)``: qubit físico de cada qubit lógico ``0..n-1``.
+
+    No Qiskit 1.4.6, ``Layout.initial_index_layout(filter_ancillas=True)`` levanta ``IndexError`` em
+    alguns layouts (reproduzido: heavy-hex 19q, nível 1, seed 0, n=8). Nesse caso o mapa inicial é
+    reconstruído de ``input_qubit_mapping`` e o final é marcado como indisponível (``None``).
+    """
+    lay = isa.layout
+    if lay is None:
+        return None, None
+    try:
+        return lay.initial_index_layout(filter_ancillas=True), lay.final_index_layout(filter_ancillas=True)
+    except IndexError:
+        initial: list = [None] * n_logical
+        for virt, phys in lay.initial_layout.get_virtual_bits().items():
+            idx = lay.input_qubit_mapping.get(virt)
+            if idx is not None and idx < n_logical:
+                initial[idx] = phys
+        return initial, None
+
+
 def transpile_with_metrics(circuit: QuantumCircuit, backend, optimization_level: int = 1,
                            seed_transpiler: int = 0, layout_method: str | None = None,
                            routing_method: str | None = None) -> tuple[QuantumCircuit, dict]:
@@ -73,8 +94,7 @@ def transpile_with_metrics(circuit: QuantumCircuit, backend, optimization_level:
     swaps = int(routed.count_ops().get("swap", 0))
 
     ok, bad = target_check(isa, backend)
-    layout = isa.layout.initial_index_layout(filter_ancillas=True) if isa.layout is not None else None
-    final = isa.layout.final_index_layout(filter_ancillas=True) if isa.layout is not None else None
+    layout, final = _layouts(isa, circuit.num_qubits)
     coupling = backend.coupling_map
     metrics = {
         "backend_name": backend.name,
