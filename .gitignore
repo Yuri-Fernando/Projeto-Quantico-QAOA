@@ -21,3 +21,13 @@ Thumbs.db
 
 # Saídas de benchmark (geradas por execução, não versionadas por padrão)
 benchmarks/results.json
+
+# Documentos privados de auditoria/candidatura (não versionar)
+Auditoria_*.txt
+
+# Caches de ferramentas locais
+.deepeval/
+.ruff_cache/
+
+# Saídas de execuções ad hoc (as execuções oficiais ficam em results/)
+results/_scratch/
