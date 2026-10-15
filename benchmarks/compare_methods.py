@@ -21,14 +21,12 @@ import json
 import time
 from pathlib import Path
 
-import numpy as np
-
-from optimization.instance import build_instance, brute_force_optimum
+from optimization.benders import solve_benders
+from optimization.instance import brute_force_optimum, build_instance
 from optimization.lp import solve_lp_relaxation
 from optimization.milp import solve_milp
-from optimization.stochastic import solve_stochastic_extensive_form
-from optimization.benders import solve_benders
 from optimization.qaoa import solve_with_qaoa
+from optimization.stochastic import solve_stochastic_extensive_form
 
 
 def _x_to_tickers(instance, x):

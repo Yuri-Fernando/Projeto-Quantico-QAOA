@@ -22,13 +22,13 @@ mesmo quando eles otimizam objetivos formalmente diferentes.
 """
 from __future__ import annotations
 
+from collections.abc import Iterator
 from dataclasses import dataclass
 from itertools import combinations
-from typing import Iterator, List
 
 import numpy as np
 
-TICKERS: List[str] = ["PETR4", "VALE3", "ITUB4"]
+TICKERS: list[str] = ["PETR4", "VALE3", "ITUB4"]
 
 # Retornos médios esperados (fictícios, mesmos do rascunho original)
 MU = np.array([0.015, 0.012, 0.010])
@@ -55,7 +55,7 @@ HEDGE_CAP = 0.10  # limite superior de hedge disponível por cenário
 
 @dataclass(frozen=True)
 class PortfolioInstance:
-    tickers: List[str]
+    tickers: list[str]
     mu: np.ndarray
     sigma: np.ndarray
     budget: int
@@ -65,6 +65,9 @@ class PortfolioInstance:
     tau: float
     hedge_cost: float
     hedge_cap: float
+
+    def __post_init__(self):
+        validate_instance(self)
 
     @property
     def n_assets(self) -> int:
@@ -97,6 +100,89 @@ class PortfolioInstance:
         r = self.scenario_returns(x)
         shortfall = np.maximum(0.0, self.tau - r)
         return float(self.probabilities @ shortfall)
+
+    def to_problem(self):
+        """Problema canônico (``optimization.canonical_qubo``) do objetivo média-variância.
+
+        ``f(x) = -mu^T x + lam x^T Sigma x`` com ``sum x = budget`` — exatamente
+        ``quadratic_objective``; é o objetivo comum do *algorithm benchmark*.
+        """
+        from .canonical_qubo import problem_from_quadratic
+
+        return problem_from_quadratic(
+            linear=-self.mu,
+            quadratic=self.lam * self.sigma,
+            k=self.budget,
+            labels=self.tickers,
+            name=f"portfolio_n{self.n_assets}_k{self.budget}",
+            domain="portfolio",
+            metadata={"lam": self.lam},
+        )
+
+
+def validate_instance(inst: PortfolioInstance, psd_tol: float = 1e-10) -> None:
+    """Valida dimensões, simetria, PSD de Sigma, cardinalidade e probabilidades (T16)."""
+    n = len(inst.tickers)
+    mu = np.asarray(inst.mu, dtype=float)
+    sigma = np.asarray(inst.sigma, dtype=float)
+    if mu.shape != (n,):
+        raise ValueError(f"mu deve ter shape ({n},), recebido {mu.shape}")
+    if sigma.shape != (n, n):
+        raise ValueError(f"Sigma deve ter shape ({n},{n}), recebido {sigma.shape}")
+    if not (np.all(np.isfinite(mu)) and np.all(np.isfinite(sigma))):
+        raise ValueError("mu e Sigma devem ser finitos")
+    if not np.allclose(sigma, sigma.T, atol=1e-12):
+        raise ValueError("Sigma deve ser simétrica")
+    min_eig = float(np.linalg.eigvalsh(sigma).min())
+    if min_eig < -psd_tol:
+        raise ValueError(f"Sigma não é positiva semidefinida (menor autovalor {min_eig:.3e})")
+    if not (1 <= inst.budget <= n):
+        raise ValueError(f"budget={inst.budget} fora de [1, {n}]")
+    if inst.lam < 0:
+        raise ValueError("lam (aversão ao risco) deve ser >= 0")
+    p = np.asarray(inst.probabilities, dtype=float)
+    if np.any(p < 0) or not np.isclose(p.sum(), 1.0):
+        raise ValueError("probabilidades de cenário devem ser >= 0 e somar 1")
+    if np.asarray(inst.scenarios).shape != (len(p), n):
+        raise ValueError("scenarios deve ter shape (S, n)")
+
+
+def generate_portfolio_instance(
+    n: int,
+    k: int | None = None,
+    seed: int = 0,
+    lam: float = LAMBDA_RISK,
+    n_factors: int = 3,
+    n_scenarios: int = N_SCENARIOS,
+) -> PortfolioInstance:
+    """Instância sintética reprodutível com ``n`` ativos (E01).
+
+    ``Sigma = B B^T + diag(d)`` (modelo de fatores) é PSD por construção; as magnitudes imitam a
+    instância original (variâncias ~0,03–0,05, retornos ~0,5–2%). ``k = floor(n/2)`` por padrão.
+    Dados 100% sintéticos — não representam ativos reais.
+    """
+    if n < 2:
+        raise ValueError("n deve ser >= 2")
+    k = n // 2 if k is None else int(k)
+    rng = np.random.default_rng(seed)
+    mu = rng.uniform(0.005, 0.02, size=n)
+    B = rng.normal(0.0, 0.08, size=(n, n_factors))
+    d = rng.uniform(0.01, 0.02, size=n)
+    sigma = B @ B.T + np.diag(d)
+    sigma = (sigma + sigma.T) / 2.0
+    scenarios = rng.multivariate_normal(mu, sigma, size=n_scenarios)
+    return PortfolioInstance(
+        tickers=[f"A{i:02d}" for i in range(n)],
+        mu=mu,
+        sigma=sigma,
+        budget=k,
+        lam=lam,
+        scenarios=scenarios,
+        probabilities=np.full(n_scenarios, 1.0 / n_scenarios),
+        tau=TAU_TARGET,
+        hedge_cost=HEDGE_COST,
+        hedge_cap=HEDGE_CAP,
+    )
 
 
 def build_instance(n_scenarios: int = N_SCENARIOS, seed: int = SCENARIO_SEED) -> PortfolioInstance:

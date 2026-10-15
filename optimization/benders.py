@@ -22,8 +22,6 @@ estocástico com ``integer_first_stage=False`` (ver
 """
 from __future__ import annotations
 
-from typing import List, Tuple
-
 import numpy as np
 import pyomo.environ as pyo
 from scipy.optimize import linprog
@@ -31,7 +29,7 @@ from scipy.optimize import linprog
 from .instance import PortfolioInstance
 
 
-def _solve_scenario_subproblem(x: np.ndarray, instance: PortfolioInstance, s: int) -> Tuple[float, float]:
+def _solve_scenario_subproblem(x: np.ndarray, instance: PortfolioInstance, s: int) -> tuple[float, float]:
     """Resolve o subproblema de recurso do cenário s dado x fixo.
 
     min   hedge_cost * y_s + z_s
@@ -56,7 +54,7 @@ def _solve_scenario_subproblem(x: np.ndarray, instance: PortfolioInstance, s: in
     return float(res.fun), dual
 
 
-def _solve_master(instance: PortfolioInstance, cuts: List[Tuple[float, np.ndarray]]):
+def _solve_master(instance: PortfolioInstance, cuts: list[tuple[float, np.ndarray]]):
     n = instance.n_assets
     m = pyo.ConcreteModel()
     m.I = pyo.RangeSet(0, n - 1)
@@ -86,7 +84,7 @@ def solve_benders(
 ) -> dict:
     n = instance.n_assets
     S = instance.n_scenarios
-    cuts: List[Tuple[float, np.ndarray]] = []
+    cuts: list[tuple[float, np.ndarray]] = []
     history = []
 
     best_x, best_obj = None, np.inf
