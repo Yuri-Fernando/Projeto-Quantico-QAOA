@@ -42,6 +42,11 @@ hardware-aware, ruído, CPU/GPU/QPU com guardas, escala, segundo domínio, repro
   arquivada em `benchmarks/archive/v0.2.0/`.
 - `requirements.txt`: + `pyyaml`, + `ruff`; − `ortools` (nunca importado).
 
+### Removido do versionamento
+- Arquivo de notas pessoais do rascunho v1 (`projeto quântico.txt`): deixou de ser rastreado e entrou
+  no `.gitignore`. A parte técnica foi preservada em `legacy/v1/notas_tecnicas_v1.md`. O arquivo
+  continua presente nos commits anteriores do histórico.
+
 ### Não executado (bloqueado por recurso externo)
 - GPU: `qiskit-aer` instalado é só CPU (`available_devices() == ('CPU',)`).
 - QPU IBM: `qiskit-ibm-runtime` e credenciais ausentes; adaptador testado só com mocks.

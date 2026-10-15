@@ -1,7 +1,7 @@
 # Legado v1 (agosto/2025) — preservado, NÃO executável no ambiente atual
 
 Arquivos do rascunho original, movidos para cá com `git mv` na v0.3.0 (histórico git intacto).
-Nenhum conteúdo foi alterado.
+O código, os notebooks e os anexos não foram alterados.
 
 | Arquivo | Situação |
 |---|---|
@@ -10,7 +10,7 @@ Nenhum conteúdo foi alterado.
 | `requirements.txt.txt` | Dependências sem pin do v1. |
 | `qaoa_portfolio_mvp.zip`, `*.docx` | Scaffold inicial gerado na época. |
 | `Captura de tela 2025-08-20 131417.jpg` | Saída histórica do notebook v1. |
-| `projeto quântico.txt` | Notas pessoais de planejamento do rascunho. |
+| `notas_tecnicas_v1.md` | Trechos técnicos das notas de planejamento do rascunho (ideia, entregáveis, próximos passos da época). O arquivo de notas pessoais original deixou de ser versionado na v0.3.0. |
 
 ## Achado confirmado por teste: dupla contagem da penalidade em `build_qubo`
 

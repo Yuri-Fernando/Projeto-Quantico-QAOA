@@ -44,7 +44,8 @@ Benders e QAOA) continua aqui como trilha separada de comparação de **modelos 
 
 ## 🧭 Origem do Projeto
 
-1. **v0.1 (ago/2025)** — rascunho QUBO+QAOA com 4 ativos, preservado em [`legacy/v1/`](legacy/v1/).
+1. **v0.1 (ago/2025)** — rascunho QUBO+QAOA com 4 ativos, preservado em [`legacy/v1/`](legacy/v1/)
+   (ideia e plano da época em [`notas_tecnicas_v1.md`](legacy/v1/notas_tecnicas_v1.md)).
 2. **v0.2.0 (out/2026)** — laboratório comparativo LP/MILP/estocástico/Benders/QAOA sobre os mesmos dados.
 3. **Auditoria técnica (2026-10-15)** apontou a lacuna decisiva: LP/MILP/Benders otimizavam
    retorno + *shortfall* e o QAOA otimizava média-variância — **objetivos diferentes**; o benchmark
@@ -350,12 +351,13 @@ tests/            180 testes (14 originais da v0.2.0)
 docs/             formulação, protocolo, arquitetura, limitações, relatório, ADR, guia
 specs/            spec, design e tasks desta versão
 reports/          template de relatório de experimento
-legacy/v1/        rascunho original (não executável no Qiskit ≥ 1.0), movido com git mv
+legacy/v1/        rascunho original (não executável no Qiskit ≥ 1.0), movido com git mv, + notas técnicas da época
 tools/            lock_deps.py
 ```
 
-Não versionado: caches (`__pycache__`, `.pytest_cache`, `.ruff_cache`), logs locais de execução e as
-contagens brutas das execuções que falharam.
+Não versionado: caches (`__pycache__`, `.pytest_cache`, `.ruff_cache`), logs locais de execução, as
+contagens brutas das execuções que falharam e documentos/notas pessoais (a parte técnica das notas do
+rascunho está em [`legacy/v1/notas_tecnicas_v1.md`](legacy/v1/notas_tecnicas_v1.md)).
 
 ---
 

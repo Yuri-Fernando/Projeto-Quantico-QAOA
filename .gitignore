@@ -22,7 +22,7 @@ Thumbs.db
 # Saídas de benchmark (geradas por execução, não versionadas por padrão)
 benchmarks/results.json
 
-# Documentos privados de auditoria/candidatura (não versionar)
+# Documentos privados (não versionar)
 Auditoria_*.txt
 
 # Caches de ferramentas locais
@@ -35,3 +35,6 @@ results/_scratch/
 # Execuções falhas: manter manifest/registros, não as contagens brutas
 results/_failed_runs/**/raw_counts.jsonl.gz
 results/_run_*.log
+
+# Notas pessoais do rascunho v1 (parte técnica em legacy/v1/notas_tecnicas_v1.md)
+legacy/v1/projeto quântico.txt
