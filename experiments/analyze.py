@@ -38,13 +38,23 @@ def _fmt(v, digits=4) -> str:
     return str(v)
 
 
+_INT_COLS = {"n", "k", "p", "runs", "indep.", "instance_seed", "shots", "optimization_level", "seed",
+             "statevector_bytes", "avaliações", "2Q_lógicas", "2Q_lógicas_total"}
+
+
+def _cell(col: str, v) -> str:
+    if col in _INT_COLS and isinstance(v, (float, np.floating)) and not np.isnan(v) and float(v).is_integer():
+        return str(int(v))
+    return _fmt(v)
+
+
 def md_table(df: pd.DataFrame) -> str:
     if df.empty:
         return "_sem dados_\n"
     cols = list(df.columns)
     lines = ["| " + " | ".join(cols) + " |", "|" + "|".join("---" for _ in cols) + "|"]
     for _, row in df.iterrows():
-        lines.append("| " + " | ".join(_fmt(row[c]) for c in cols) + " |")
+        lines.append("| " + " | ".join(_cell(c, row[c]) for c in cols) + " |")
     return "\n".join(lines) + "\n"
 
 
@@ -268,7 +278,7 @@ def summarize_noise(df: pd.DataFrame, out: Path) -> str:
             ax.set_xticks(x, order, rotation=35, ha="right", fontsize=7)
             _style(ax, label, "", "")
         axes[0].legend(frameon=False, fontsize=8, labelcolor=INK_2)
-        fig.suptitle(f"{domain}, n={n}: mesmo circuito otimizado no ideal, executado sob ruído (média das seeds)",
+        fig.suptitle(f"{domain}, n={n}: mesmo circuito otimizado no ideal, executado sob ruído (média de p e seeds)",
                      color=INK, fontsize=10, x=0.01, ha="left")
         md.append(f"![ruído {domain}](figures/{_save(fig, plt, out / 'figures' / f'noise_{domain}_n{n}.png')})")
     return "\n\n".join(md) + "\n"

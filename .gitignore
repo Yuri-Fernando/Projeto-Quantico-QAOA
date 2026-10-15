@@ -31,3 +31,7 @@ Auditoria_*.txt
 
 # Saídas de execuções ad hoc (as execuções oficiais ficam em results/)
 results/_scratch/
+
+# Execuções falhas: manter manifest/registros, não as contagens brutas
+results/_failed_runs/**/raw_counts.jsonl.gz
+results/_run_*.log
