@@ -1,0 +1,38 @@
+experiment: e3_noise
+kind: noise
+track: hardware
+description: >
+  Protocolo de transferência: parâmetros otimizados na simulação ideal; o MESMO circuito é
+  executado (mesma seed, 4096 shots) sob regimes ideal, leitura, despolarizante, ambos e
+  modelos derivados de backends fake. Mede degradação de P(ótimo) e da taxa viável.
+instances:
+  domains: [portfolio]
+  sizes: [4, 6, 8]
+  seeds: [0]
+  k: half
+noise:
+  grid:
+    mixer: [x, xy_ring]
+    p: [1, 2]
+  seeds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+  shots: 4096
+  maxiter: 200
+  regimes:
+    - {label: ideal_aer, regime: ideal}
+    - {label: readout_1pct, regime: readout, noise_params: {p_meas: 0.01}}
+    - {label: readout_3pct, regime: readout, noise_params: {p_meas: 0.03}}
+    - {label: depol_p2_0.5pct, regime: depolarizing, noise_params: {p1: 0.0005, p2: 0.005}}
+    - {label: depol_p2_2pct, regime: depolarizing, noise_params: {p1: 0.002, p2: 0.02}}
+    - {label: readout+depol, regime: readout+depolarizing, noise_params: {p1: 0.001, p2: 0.01, p_meas: 0.02}}
+    - {label: fake_heavyhex_d3, regime: backend, fake_backend: generic_heavyhex_d3}
+    - {label: fake27_snapshot, regime: backend, fake_backend: fake27_snapshot}
+quick:
+  instances: {sizes: [4]}
+  noise:
+    grid: {p: [1]}
+    seeds: [0]
+    shots: 512
+    maxiter: 30
+    regimes:
+      - {label: ideal_aer, regime: ideal}
+      - {label: readout_3pct, regime: readout, noise_params: {p_meas: 0.03}}

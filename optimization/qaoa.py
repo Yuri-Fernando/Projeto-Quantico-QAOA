@@ -19,6 +19,12 @@ Bug real encontrado e corrigido (API do Qiskit desatualizada, agosto/2025):
   ``requirements.txt``): qiskit 1.4.x + qiskit-aer + qiskit-optimization
   0.7 + qiskit-algorithms 0.4, sem qiskit-terra/qiskit-ibmq-provider soltos.
 
+Nomenclatura (auditoria P0.2): ``StatevectorSampler`` calcula o estado ideal (sem ruído) e devolve
+``default_shots=1024`` AMOSTRAS dele; o ``MinimumEigenOptimizer`` escolhe a melhor amostra. Isso é
+"simulação ideal + amostragem finita", não "probabilidades exatas". Para probabilidades exatas,
+viabilidade por amostra, QUBO exportado e mixers alternativos, use ``quantum.runner`` (v0.3.0).
+Este módulo é mantido como está para a trilha ``model_comparison`` e para o teste da v0.2.0.
+
 A restrição de orçamento (``sum x_i = budget``) é modelada como restrição
 linear NATIVA do ``QuadraticProgram`` (não como penalidade manual como no
 rascunho v1); o ``MinimumEigenOptimizer`` converte automaticamente para

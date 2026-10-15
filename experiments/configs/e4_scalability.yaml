@@ -1,0 +1,26 @@
+experiment: e4_scalability
+kind: algorithm_benchmark
+track: algorithm_benchmark
+description: >
+  Escalabilidade de tempo e memória: clássicos exatos x simulação clássica do QAOA (p=1) até
+  n=20. Crescimento do custo de SIMULAR não demonstra nem refuta speedup em QPU.
+instances:
+  domains: [portfolio]
+  sizes: [4, 6, 8, 10, 12, 14, 16, 18, 20]
+  seeds: [0, 1, 2]
+  k: half
+classical:
+  seeds: [0]
+  random_samples: 1024
+qaoa:
+  grid:
+    mixer: [x, xy_ring]
+    p: [1]
+    optimizer: [cobyla]
+    init_strategy: [linear_ramp]
+    shots: [1024]
+  seeds: [0, 1, 2]
+  maxiter: 150
+quick:
+  instances: {sizes: [4, 6], seeds: [0]}
+  qaoa: {seeds: [0], maxiter: 30}

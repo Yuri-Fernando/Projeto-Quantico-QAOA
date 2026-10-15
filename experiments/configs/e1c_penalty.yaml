@@ -1,0 +1,26 @@
+experiment: e1c_penalty
+kind: algorithm_benchmark
+track: algorithm_benchmark
+description: >
+  Estudo da penalidade rho = fator x penalidade segura no QAOA padrão (mixer X): fatores baixos
+  podem tornar o estado fundamental inviável; altos achatam a paisagem do objetivo.
+instances:
+  domains: [portfolio]
+  sizes: [6, 8]
+  seeds: [0, 1, 2]
+  k: half
+classical:
+  seeds: [0]
+qaoa:
+  grid:
+    mixer: [x]
+    p: [2]
+    penalty_factor: [0.02, 0.05, 0.1, 0.25, 0.5, 1.0, 2.0]
+    optimizer: [cobyla]
+    init_strategy: [linear_ramp, random]
+    shots: [1024]
+  seeds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+  maxiter: 200
+quick:
+  instances: {sizes: [6], seeds: [0]}
+  qaoa: {grid: {penalty_factor: [0.1, 1.0]}, seeds: [0], maxiter: 30}

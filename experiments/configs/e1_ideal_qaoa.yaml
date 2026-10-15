@@ -1,0 +1,30 @@
+experiment: e1_ideal_qaoa
+kind: algorithm_benchmark
+track: algorithm_benchmark
+description: >
+  Qualidade do QAOA ideal (sem ruído) x baselines clássicos no MESMO objetivo, por tamanho e
+  profundidade, 10 seeds de otimização x 3 instâncias. Duas políticas de viabilidade: mixer X +
+  penalidade segura e mixer XY em anel + estado de Dicke.
+instances:
+  domains: [portfolio]
+  sizes: [4, 6, 8, 10, 12]
+  seeds: [0, 1, 2]
+  k: half
+classical:
+  seeds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+  random_samples: 1024
+  sa_steps: 2000
+qaoa:
+  grid:
+    mixer: [x, xy_ring]
+    p: [1, 2, 3, 4]
+    optimizer: [cobyla]
+    init_strategy: [linear_ramp, random]
+    shots: [1024]
+  seeds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+  maxiter: 300
+  objective_mode: exact
+quick:
+  instances: {sizes: [4, 6], seeds: [0]}
+  classical: {seeds: [0, 1]}
+  qaoa: {grid: {p: [1, 2]}, seeds: [0, 1], maxiter: 60}

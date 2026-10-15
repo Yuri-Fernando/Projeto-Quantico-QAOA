@@ -42,7 +42,7 @@ class QAOAConfig:
     seed: int = 0
     shots: int = 1024
     objective_mode: str = "exact"  # "exact" | "sampled"
-    eval_shots: int = 1024
+    eval_shots: Optional[int] = None  # None -> usa `shots` (shots por avaliação no modo "sampled")
 
     def __post_init__(self):
         if self.p < 1:
@@ -127,6 +127,7 @@ def run_qaoa(problem: CardinalityProblem, cfg: QAOAConfig, f_star: Optional[floa
     e_min, e_max = float(energies.min()), float(energies.max())
     e_span = (e_max - e_min) or 1.0
     rng_eval = np.random.default_rng([cfg.seed, 1])
+    eval_shots = cfg.eval_shots or cfg.shots
     n_evals = 0
 
     def objective(params):
@@ -136,8 +137,8 @@ def run_qaoa(problem: CardinalityProblem, cfg: QAOAConfig, f_star: Optional[floa
         if cfg.objective_mode == "exact":
             value = float(probs @ energies)
         else:
-            draws = rng_eval.multinomial(cfg.eval_shots, probs)
-            value = float(draws @ energies / cfg.eval_shots)
+            draws = rng_eval.multinomial(eval_shots, probs)
+            value = float(draws @ energies / eval_shots)
         return (value - e_min) / e_span
 
     rng_init = np.random.default_rng([cfg.seed, 0])
@@ -182,7 +183,7 @@ def run_qaoa(problem: CardinalityProblem, cfg: QAOAConfig, f_star: Optional[floa
         "optimizer_message": opt_msg,
         "optimizer_value_normalized": opt_value,
         "circuit_evaluations": n_evals,
-        "shots_total": cfg.shots + (n_evals * cfg.eval_shots if cfg.objective_mode == "sampled" else 0),
+        "shots_total": cfg.shots + (n_evals * eval_shots if cfg.objective_mode == "sampled" else 0),
         "f_star": f_star,
         "p_optimum_uniform_feasible": (n_optimal / comb(problem.n, problem.k)) if n_optimal else None,
         "p_optimum_uniform_all": (n_optimal / 2**problem.n) if n_optimal else None,
