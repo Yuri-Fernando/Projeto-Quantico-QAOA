@@ -1,0 +1,153 @@
+{
+  "run_id": "20261015T193528Z-b28969",
+  "experiment": "e3_noise",
+  "kind": "noise",
+  "track": "hardware",
+  "timestamp_utc": "2026-10-15T19:35:28.804144+00:00",
+  "git_sha": "fc936b306ae185aba003a6ff2933b24877c54ceb",
+  "git_dirty": false,
+  "python_version": "3.10.8",
+  "platform": "Windows-10-10.0.26300-SP0",
+  "library_versions": {
+    "qiskit": "1.4.6",
+    "qiskit-aer": "0.17.2",
+    "qiskit-algorithms": "0.4.0",
+    "qiskit-optimization": "0.7.0",
+    "qiskit-ibm-runtime": null,
+    "numpy": "2.2.6",
+    "scipy": "1.15.3",
+    "pyomo": "6.10.1",
+    "highspy": "1.15.1"
+  },
+  "devices": {
+    "host": {
+      "platform": "Windows-10-10.0.26300-SP0",
+      "python": "3.10.8",
+      "processor": "Intel64 Family 6 Model 158 Stepping 10, GenuineIntel",
+      "cpu_count_logical": 6,
+      "ram_total_gb": 31.94,
+      "cpu_count_physical": 6
+    },
+    "nvidia_gpus": [
+      {
+        "name": "NVIDIA GeForce RTX 3060 Ti",
+        "memory_total": "8192 MiB",
+        "driver": "617.42"
+      }
+    ],
+    "aer_available_devices": [
+      "CPU"
+    ],
+    "aer_gpu_available": false,
+    "gpu_status": "host_has_nvidia_gpu_but_qiskit_aer_build_is_cpu_only",
+    "qiskit_ibm_runtime_installed": false
+  },
+  "dependency_lock": "requirements-lock.txt",
+  "config": {
+    "experiment": "e3_noise",
+    "kind": "noise",
+    "track": "hardware",
+    "description": "Protocolo de transferência: parâmetros otimizados na simulação ideal; o MESMO circuito é executado (mesma seed, 4096 shots) sob regimes ideal, leitura, despolarizante, ambos e modelos derivados de backends fake. Mede degradação de P(ótimo) e da taxa viável.\n",
+    "instances": {
+      "domains": [
+        "portfolio"
+      ],
+      "sizes": [
+        4,
+        6,
+        8
+      ],
+      "seeds": [
+        0
+      ],
+      "k": "half"
+    },
+    "noise": {
+      "grid": {
+        "mixer": [
+          "x",
+          "xy_ring"
+        ],
+        "p": [
+          1,
+          2
+        ]
+      },
+      "seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "shots": 4096,
+      "maxiter": 200,
+      "regimes": [
+        {
+          "label": "ideal_aer",
+          "regime": "ideal"
+        },
+        {
+          "label": "readout_1pct",
+          "regime": "readout",
+          "noise_params": {
+            "p_meas": 0.01
+          }
+        },
+        {
+          "label": "readout_3pct",
+          "regime": "readout",
+          "noise_params": {
+            "p_meas": 0.03
+          }
+        },
+        {
+          "label": "depol_p2_0.5pct",
+          "regime": "depolarizing",
+          "noise_params": {
+            "p1": 0.0005,
+            "p2": 0.005
+          }
+        },
+        {
+          "label": "depol_p2_2pct",
+          "regime": "depolarizing",
+          "noise_params": {
+            "p1": 0.002,
+            "p2": 0.02
+          }
+        },
+        {
+          "label": "readout+depol",
+          "regime": "readout+depolarizing",
+          "noise_params": {
+            "p1": 0.001,
+            "p2": 0.01,
+            "p_meas": 0.02
+          }
+        },
+        {
+          "label": "fake_heavyhex_d3",
+          "regime": "backend",
+          "fake_backend": "generic_heavyhex_d3"
+        },
+        {
+          "label": "fake27_snapshot",
+          "regime": "backend",
+          "fake_backend": "fake27_snapshot"
+        }
+      ]
+    }
+  },
+  "config_hash": "f2626e6e70cc982f0c9bf5ff26e1cdde0ea4538b05e46d0e0f4fcfd52b655315",
+  "command": "python -m experiments.run --config experiments/configs/e3_noise.yaml",
+  "allow_qpu": false,
+  "n_records": 726,
+  "status": "failed: IndexError: list assignment index out of range",
+  "wall_time_s": 216.14346870000008
+}

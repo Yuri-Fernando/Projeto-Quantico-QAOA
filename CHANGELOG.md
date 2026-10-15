@@ -2,6 +2,51 @@
 
 Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e [SemVer](https://semver.org/lang/pt-BR/).
 
+## [0.3.0] - 2026-10-15
+
+Implementação da auditoria técnica de 2026-10-15 (benchmark de mesmo objetivo, QAOA instrumentado,
+hardware-aware, ruído, CPU/GPU/QPU com guardas, escala, segundo domínio, reprodutibilidade).
+
+### Adicionado
+- `optimization/canonical_qubo.py`: problema canônico com `objective_id`/hash, QUBO penalizado com ρ
+  exportado, penalidade segura (com prova) e crítica, Ising e `SparsePauliOp` com ordem de bits documentada.
+- `optimization/classical_qubo.py`: enumeração, MILP linearizado (McCormick/HiGHS) e relaxação LP do
+  MESMO objetivo do QAOA; `optimization/heuristics.py`: simulated annealing e amostragem aleatória viável.
+- `optimization/instance.py`: validação (PSD, simetria, k, probabilidades) e gerador de instâncias de n
+  ativos; `optimization/scheduling.py`: segundo domínio (seleção de tarefas por turno com conflitos).
+- `quantum/`: circuito QAOA explícito (mixer X + penalidade; mixer XY em anel + estado de Dicke),
+  simulador exato vetorizado, runner (COBYLA/SPSA, inicializações, modo exato/amostrado), medição e
+  estatística (viabilidade, P(ótimo), Wilson, bootstrap), transpilation hardware-aware (SWAPs, layout,
+  Target), regimes de ruído e backends fake, `ExecutionResult` unificado, adaptadores Aer CPU/GPU e IBM QPU.
+- `hpc/`: detecção real de dispositivos, profiling e orquestrador híbrido com tempos por estágio.
+- `experiments/`: CLI por YAML (E0–E7), manifest por execução, análise que regenera tabelas/figuras só de
+  dados salvos, demonstrador HTML de 5 passos.
+- `results/`: execuções oficiais de E0–E7 com manifests, registros e contagens brutas.
+- Documentação: formulação, protocolo, arquitetura, limitações de hardware, relatório técnico, ADR-001,
+  guia de capacitação, template de relatório; `specs/hardware-aware-lab/`.
+- `pyproject.toml`, `requirements-lock.txt`, `tools/lock_deps.py`, `.github/workflows/ci.yml`.
+- 166 testes novos (suíte: 180 coletados, 179 passam, 1 skip explícito de GPU; os 14 da v0.2.0 inalterados).
+
+### Corrigido
+- Benchmark de modelos rotulava a simulação como "statevector exato" e afirmava que o QAOA encontrava o
+  mesmo ótimo do MILP — objetivos diferentes. Agora é a trilha `model_comparison`, com nota explícita.
+- Contorno para `IndexError` do Qiskit 1.4.6 em `Layout.initial_index_layout(filter_ancillas=True)`.
+- Hash de modelo de ruído estável (remove `id` aleatório de `NoiseModel.to_dict()`).
+
+### Confirmado (sem alteração do arquivo)
+- Dupla contagem do termo cruzado da penalidade em `legacy/v1/portfolio_qaoa.py::build_qubo`
+  (diferença exata `2ρ Σ_{i<j} x_i x_j`, `tests/test_legacy_penalty.py`).
+
+### Alterado
+- Rascunho v1 movido para `legacy/v1/` com `git mv` (conteúdo intacto); saída do benchmark v0.2.0
+  arquivada em `benchmarks/archive/v0.2.0/`.
+- `requirements.txt`: + `pyyaml`, + `ruff`; − `ortools` (nunca importado).
+
+### Não executado (bloqueado por recurso externo)
+- GPU: `qiskit-aer` instalado é só CPU (`available_devices() == ('CPU',)`).
+- QPU IBM: `qiskit-ibm-runtime` e credenciais ausentes; adaptador testado só com mocks.
+- CI: workflow escrito, executa após push.
+
 ## [0.2.0] - 2026-10-07
 
 ### Adicionado
