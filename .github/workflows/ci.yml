@@ -1,0 +1,55 @@
+# CI: lint -> testes (CPU, offline) -> smoke dos experimentos -> artefatos.
+# GPU e QPU NÃO rodam aqui: o teste de GPU dá skip explícito e o adaptador de QPU recusa CI.
+name: ci
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      PYTHONIOENCODING: utf-8
+      MPLBACKEND: Agg
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+          cache: pip
+
+      - name: Instalar dependências (versões exatas testadas)
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-lock.txt
+          python -m pip install -r requirements.txt
+
+      - name: Lint (ruff)
+        run: python -m ruff check .
+
+      - name: Testes unitários e de integração (CPU, sem rede)
+        run: python -m pytest -q -rs
+
+      - name: Smoke dos experimentos (configs em modo --quick)
+        run: |
+          for cfg in experiments/configs/*.yaml; do
+            python -m experiments.run --config "$cfg" --quick --out ci-results
+          done
+
+      - name: Benchmark de modelos (trilha model_comparison)
+        run: python -m benchmarks.compare_methods > ci-results/model_comparison.md
+
+      - name: Publicar artefatos
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-results
+          path: ci-results/
+          retention-days: 14

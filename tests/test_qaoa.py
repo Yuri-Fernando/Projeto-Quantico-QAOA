@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from optimization.instance import build_instance, brute_force_optimum
+from optimization.instance import brute_force_optimum, build_instance
 from optimization.qaoa import build_quadratic_program, solve_with_qaoa
 
 

@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "quantum-classical-optimization-lab"
+version = "0.3.0"
+description = "Laboratório hardware-aware de otimização clássica × QAOA com benchmark de mesmo objetivo"
+readme = "README.md"
+requires-python = ">=3.10,<3.13"
+authors = [{ name = "Yuri Fernando Dubbern" }]
+# Pins de faixa; versões exatas testadas em requirements-lock.txt
+dependencies = [
+    "numpy>=2.2,<3",
+    "scipy>=1.15,<2",
+    "pandas>=2.2,<3",
+    "matplotlib>=3.9,<4",
+    "pyyaml>=6,<7",
+    "pyomo>=6.10,<7",
+    "highspy>=1.15,<2",
+    "qiskit>=1.4,<2",
+    "qiskit-aer>=0.17,<1",
+    "qiskit-optimization>=0.7,<1",
+    "qiskit-algorithms>=0.4,<1",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=9,<10", "ruff>=0.15"]
+profiling = ["psutil>=5.9"]
+# NÃO testado contra o serviço real (BLOCKED_BY_CONFIGURATION); conferir a API da versão instalada.
+qpu = ["qiskit-ibm-runtime"]
+
+[tool.setuptools.packages.find]
+include = ["optimization*", "quantum*", "hpc*", "experiments*", "benchmarks*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-p no:cacheprovider"
+filterwarnings = [
+    # Deprecações INTERNAS do qiskit-aer 0.17 / Qiskit 1.4, não do código deste projeto:
+    "ignore:The property ``qiskit.circuit.instruction.Instruction.condition`` is deprecated:DeprecationWarning",
+    "ignore:qiskit.providers.models is deprecated:DeprecationWarning",
+    "ignore:The class ``qiskit.circuit.library.n_local.n_local.NLocal`` is pending deprecation:PendingDeprecationWarning",
+]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+extend-exclude = ["legacy"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+ignore = ["E731", "UP007", "UP045", "B905"]

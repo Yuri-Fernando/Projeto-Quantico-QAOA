@@ -1,0 +1,120 @@
+{
+  "run_id": "20261015T192429Z-2b154f",
+  "experiment": "e1c_penalty",
+  "kind": "algorithm_benchmark",
+  "track": "algorithm_benchmark",
+  "timestamp_utc": "2026-10-15T19:24:29.889665+00:00",
+  "git_sha": "fc936b306ae185aba003a6ff2933b24877c54ceb",
+  "git_dirty": false,
+  "python_version": "3.10.8",
+  "platform": "Windows-10-10.0.26300-SP0",
+  "library_versions": {
+    "qiskit": "1.4.6",
+    "qiskit-aer": "0.17.2",
+    "qiskit-algorithms": "0.4.0",
+    "qiskit-optimization": "0.7.0",
+    "qiskit-ibm-runtime": null,
+    "numpy": "2.2.6",
+    "scipy": "1.15.3",
+    "pyomo": "6.10.1",
+    "highspy": "1.15.1"
+  },
+  "devices": {
+    "host": {
+      "platform": "Windows-10-10.0.26300-SP0",
+      "python": "3.10.8",
+      "processor": "Intel64 Family 6 Model 158 Stepping 10, GenuineIntel",
+      "cpu_count_logical": 6,
+      "ram_total_gb": 31.94,
+      "cpu_count_physical": 6
+    },
+    "nvidia_gpus": [
+      {
+        "name": "NVIDIA GeForce RTX 3060 Ti",
+        "memory_total": "8192 MiB",
+        "driver": "617.42"
+      }
+    ],
+    "aer_available_devices": [
+      "CPU"
+    ],
+    "aer_gpu_available": false,
+    "gpu_status": "host_has_nvidia_gpu_but_qiskit_aer_build_is_cpu_only",
+    "qiskit_ibm_runtime_installed": false
+  },
+  "dependency_lock": "requirements-lock.txt",
+  "config": {
+    "experiment": "e1c_penalty",
+    "kind": "algorithm_benchmark",
+    "track": "algorithm_benchmark",
+    "description": "Estudo da penalidade rho = fator x penalidade segura no QAOA padrão (mixer X): fatores baixos podem tornar o estado fundamental inviável; altos achatam a paisagem do objetivo.\n",
+    "instances": {
+      "domains": [
+        "portfolio"
+      ],
+      "sizes": [
+        6,
+        8
+      ],
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "k": "half"
+    },
+    "classical": {
+      "seeds": [
+        0
+      ]
+    },
+    "qaoa": {
+      "grid": {
+        "mixer": [
+          "x"
+        ],
+        "p": [
+          2
+        ],
+        "penalty_factor": [
+          0.02,
+          0.05,
+          0.1,
+          0.25,
+          0.5,
+          1.0,
+          2.0
+        ],
+        "optimizer": [
+          "cobyla"
+        ],
+        "init_strategy": [
+          "linear_ramp",
+          "random"
+        ],
+        "shots": [
+          1024
+        ]
+      },
+      "seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "maxiter": 200
+    }
+  },
+  "config_hash": "eda80fcab9df239f448114b959b1cd0375303930d34fa5a5490a1f2dd9bc52ad",
+  "command": "python -m experiments.run --config experiments/configs/e1c_penalty.yaml",
+  "allow_qpu": false,
+  "n_records": 870,
+  "status": "completed",
+  "wall_time_s": 112.48324850000063
+}

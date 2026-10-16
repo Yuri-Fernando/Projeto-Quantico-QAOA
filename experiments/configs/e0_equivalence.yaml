@@ -1,0 +1,13 @@
+experiment: e0_equivalence
+kind: equivalence
+track: algorithm_benchmark
+description: >
+  Sanity check matemático: f original, problema canônico, QUBO penalizado, Ising (com offset),
+  SparsePauliOp, MILP linearizado e enumeração coincidem para TODAS as bitstrings.
+instances:
+  domains: [portfolio, shift_scheduling]
+  sizes: [3, 4, 5, 6, 8]
+  seeds: [0, 1, 2, 3, 4]
+  k: half
+quick:
+  instances: {sizes: [3, 4], seeds: [0]}

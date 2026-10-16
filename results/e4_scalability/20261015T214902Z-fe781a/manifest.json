@@ -1,0 +1,112 @@
+{
+  "run_id": "20261015T214902Z-fe781a",
+  "experiment": "e4_scalability",
+  "kind": "algorithm_benchmark",
+  "track": "algorithm_benchmark",
+  "timestamp_utc": "2026-10-15T21:49:02.881877+00:00",
+  "git_sha": "2b5c85f7ea3d7142eb7ed6b7660e1482b2fcd450",
+  "git_dirty": false,
+  "python_version": "3.10.8",
+  "platform": "Windows-10-10.0.26300-SP0",
+  "library_versions": {
+    "qiskit": "1.4.6",
+    "qiskit-aer": "0.17.2",
+    "qiskit-algorithms": "0.4.0",
+    "qiskit-optimization": "0.7.0",
+    "qiskit-ibm-runtime": null,
+    "numpy": "2.2.6",
+    "scipy": "1.15.3",
+    "pyomo": "6.10.1",
+    "highspy": "1.15.1"
+  },
+  "devices": {
+    "host": {
+      "platform": "Windows-10-10.0.26300-SP0",
+      "python": "3.10.8",
+      "processor": "Intel64 Family 6 Model 158 Stepping 10, GenuineIntel",
+      "cpu_count_logical": 6,
+      "ram_total_gb": 31.94,
+      "cpu_count_physical": 6
+    },
+    "nvidia_gpus": [
+      {
+        "name": "NVIDIA GeForce RTX 3060 Ti",
+        "memory_total": "8192 MiB",
+        "driver": "617.42"
+      }
+    ],
+    "aer_available_devices": [
+      "CPU"
+    ],
+    "aer_gpu_available": false,
+    "gpu_status": "host_has_nvidia_gpu_but_qiskit_aer_build_is_cpu_only",
+    "qiskit_ibm_runtime_installed": false
+  },
+  "dependency_lock": "requirements-lock.txt",
+  "config": {
+    "experiment": "e4_scalability",
+    "kind": "algorithm_benchmark",
+    "track": "algorithm_benchmark",
+    "description": "Escalabilidade de tempo e memória: clássicos exatos x simulação clássica do QAOA (p=1) até n=20. Crescimento do custo de SIMULAR não demonstra nem refuta speedup em QPU.\n",
+    "instances": {
+      "domains": [
+        "portfolio"
+      ],
+      "sizes": [
+        4,
+        6,
+        8,
+        10,
+        12,
+        14,
+        16,
+        18,
+        20
+      ],
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "k": "half"
+    },
+    "classical": {
+      "seeds": [
+        0
+      ],
+      "random_samples": 1024
+    },
+    "qaoa": {
+      "grid": {
+        "mixer": [
+          "x",
+          "xy_ring"
+        ],
+        "p": [
+          1
+        ],
+        "optimizer": [
+          "cobyla"
+        ],
+        "init_strategy": [
+          "linear_ramp"
+        ],
+        "shots": [
+          1024
+        ]
+      },
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "maxiter": 150
+    }
+  },
+  "config_hash": "747721100e78d224a4eca8d4db54a159b9e6cba1cee8cdc8a9e7f7c64fc2309d",
+  "command": "python -m experiments.run --config experiments/configs/e4_scalability.yaml",
+  "allow_qpu": false,
+  "n_records": 297,
+  "status": "completed",
+  "wall_time_s": 867.7960751999999
+}

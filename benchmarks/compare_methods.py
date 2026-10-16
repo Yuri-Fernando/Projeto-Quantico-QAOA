@@ -1,16 +1,20 @@
-"""Benchmark real: LP vs MILP vs Estocástico vs Benders vs QAOA, na mesma instância.
+"""Trilha MODEL_COMPARISON: LP vs MILP vs Estocástico vs Benders vs QAOA, na mesma instância.
 
-Mede, para cada método, tempo de execução (``time.perf_counter``), o valor
-objetivo nativo do método, e reavalia a solução ``x`` encontrada nas DUAS
-métricas comuns definidas em ``optimization.instance``:
+ATENÇÃO — isto NÃO é um benchmark algoritmo-contra-algoritmo. LP/MILP/estocástico/Benders
+minimizam retorno negativo + *shortfall* por cenários; o QAOA minimiza média-variância
+(``-mu^T x + lam x^T Sigma x``). Mesmos dados, objetivos diferentes: a tabela compara
+FORMULAÇÕES de risco. A comparação de algoritmos sobre o MESMO objetivo está em
+``benchmarks/fair_qubo_benchmark.py`` (trilha ``algorithm_benchmark``).
+
+Mede, para cada método, tempo de execução (``time.perf_counter``, uma execução), o valor
+objetivo nativo do método, e reavalia a solução ``x`` encontrada nas DUAS métricas
+definidas em ``optimization.instance``:
 
 - ``quadratic_objective``: risco média-variância (nativo do QUBO/QAOA)
 - ``expected_shortfall_metric``: risco de shortfall por cenário (nativo
   de LP/MILP/estocástico/Benders)
 
-Isso permite comparar "qualidade da solução" de forma honesta mesmo entre
-métodos que otimizam objetivos formalmente diferentes. Os números deste
-relatório são MEDIDOS a cada execução — nenhum valor é inventado.
+Os números deste relatório são MEDIDOS a cada execução — nenhum valor é inventado.
 
 Uso:
     python -m benchmarks.compare_methods
@@ -21,14 +25,12 @@ import json
 import time
 from pathlib import Path
 
-import numpy as np
-
-from optimization.instance import build_instance, brute_force_optimum
+from optimization.benders import solve_benders
+from optimization.instance import brute_force_optimum, build_instance
 from optimization.lp import solve_lp_relaxation
 from optimization.milp import solve_milp
-from optimization.stochastic import solve_stochastic_extensive_form
-from optimization.benders import solve_benders
 from optimization.qaoa import solve_with_qaoa
+from optimization.stochastic import solve_stochastic_extensive_form
 
 
 def _x_to_tickers(instance, x):
@@ -122,7 +124,7 @@ def run_benchmark() -> dict:
     t_qaoa = time.perf_counter() - t0
     rows.append(
         {
-            "method": "QUBO/QAOA (simulado, statevector exato)",
+            "method": "QUBO/QAOA (simulação ideal sem ruído + 1024 shots amostrados)",
             "time_s": t_qaoa,
             "native_objective": qaoa["objective"],
             "selected": _x_to_tickers(instance, qaoa["x"]),
@@ -131,14 +133,29 @@ def run_benchmark() -> dict:
         }
     )
 
-    return {"instance_tickers": instance.tickers, "budget": instance.budget, "rows": rows}
+    for row in rows:
+        row["native_objective_kind"] = (
+            "mean_variance" if row["method"].startswith(("Brute", "QUBO")) else "return_plus_shortfall"
+        )
+    return {
+        "track": "model_comparison",
+        "instance_tickers": instance.tickers,
+        "budget": instance.budget,
+        "rows": rows,
+    }
 
 
 def render_markdown(report: dict) -> str:
     lines = [
-        "# Resultados do benchmark (medidos — ver `python -m benchmarks.compare_methods`)",
+        "# Comparação de MODELOS de risco (trilha `model_comparison`, medida — "
+        "ver `python -m benchmarks.compare_methods`)",
         "",
-        f"Instância: {report['instance_tickers']}, budget={report['budget']}",
+        "> Esta tabela NÃO ranqueia algoritmos: LP/MILP/estocástico/Benders otimizam retorno + *shortfall*;",
+        "> brute force e QAOA otimizam média-variância. Comparação de algoritmos no MESMO objetivo:",
+        "> `results/` (trilha `algorithm_benchmark`, `python -m benchmarks.fair_qubo_benchmark`).",
+        "",
+        f"Instância: {report['instance_tickers']}, budget={report['budget']} · tempos de UMA execução, sem",
+        "distribuição estatística.",
         "",
         "| Método | Tempo (s) | Selecionados | Obj. nativo | Risco quadrático | Shortfall esperado |",
         "|---|---|---|---|---|---|",
@@ -150,12 +167,12 @@ def render_markdown(report: dict) -> str:
         )
     lines.append("")
     lines.append(
-        "**Nota honesta:** o QAOA aqui roda em simulador estatevector local (sem ruído, "
-        "sem hardware quântico real). Ele NÃO tem nenhuma vantagem de tempo sobre os métodos "
-        "clássicos nesta instância de 3 qubits — pelo contrário, é o método mais lento do "
-        "benchmark. O objetivo desta comparação é validar CORREÇÃO (QAOA encontra o mesmo "
-        "ótimo que busca exaustiva / MILP), não demonstrar vantagem quântica, que não existe "
-        "nesta escala nem nesta configuração."
+        "**Nota:** o QAOA usa `qiskit_algorithms.QAOA` com `StatevectorSampler` — o estado é "
+        "calculado sem ruído e a saída são 1024 shots AMOSTRADOS dele (não são probabilidades exatas). "
+        "Não há hardware quântico. Nesta instância de 3 qubits o QAOA reencontra o ótimo da busca "
+        "exaustiva (mesmo objetivo média-variância); MILP/estocástico/Benders escolhem outra carteira "
+        "porque otimizam OUTRO objetivo (shortfall), não por erro de nenhum dos lados. O QAOA é o "
+        "método mais lento; nada aqui indica vantagem quântica."
     )
     return "\n".join(lines)
 

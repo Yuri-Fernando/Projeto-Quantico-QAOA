@@ -1,0 +1,100 @@
+{
+  "run_id": "20261015T213803Z-1830f6",
+  "experiment": "e2_hardware_aware",
+  "kind": "transpilation",
+  "track": "hardware",
+  "timestamp_utc": "2026-10-15T21:38:03.563046+00:00",
+  "git_sha": "2b5c85f7ea3d7142eb7ed6b7660e1482b2fcd450",
+  "git_dirty": false,
+  "python_version": "3.10.8",
+  "platform": "Windows-10-10.0.26300-SP0",
+  "library_versions": {
+    "qiskit": "1.4.6",
+    "qiskit-aer": "0.17.2",
+    "qiskit-algorithms": "0.4.0",
+    "qiskit-optimization": "0.7.0",
+    "qiskit-ibm-runtime": null,
+    "numpy": "2.2.6",
+    "scipy": "1.15.3",
+    "pyomo": "6.10.1",
+    "highspy": "1.15.1"
+  },
+  "devices": {
+    "host": {
+      "platform": "Windows-10-10.0.26300-SP0",
+      "python": "3.10.8",
+      "processor": "Intel64 Family 6 Model 158 Stepping 10, GenuineIntel",
+      "cpu_count_logical": 6,
+      "ram_total_gb": 31.94,
+      "cpu_count_physical": 6
+    },
+    "nvidia_gpus": [
+      {
+        "name": "NVIDIA GeForce RTX 3060 Ti",
+        "memory_total": "8192 MiB",
+        "driver": "617.42"
+      }
+    ],
+    "aer_available_devices": [
+      "CPU"
+    ],
+    "aer_gpu_available": false,
+    "gpu_status": "host_has_nvidia_gpu_but_qiskit_aer_build_is_cpu_only",
+    "qiskit_ibm_runtime_installed": false
+  },
+  "dependency_lock": "requirements-lock.txt",
+  "config": {
+    "experiment": "e2_hardware_aware",
+    "kind": "transpilation",
+    "track": "hardware",
+    "description": "Circuito lógico x físico em backends fake (linha, heavy-hex sintético de 19 qubits, snapshot Fake27QPulseV1 e all-to-all de referência): portas 2Q, SWAPs, profundidade, por nível de otimização e seed de transpilation. Portfólio (denso) x escalonamento (esparso).\n",
+    "instances": {
+      "domains": [
+        "portfolio",
+        "shift_scheduling"
+      ],
+      "sizes": [
+        4,
+        6,
+        8,
+        10,
+        12
+      ],
+      "seeds": [
+        0
+      ],
+      "k": "half"
+    },
+    "transpilation": {
+      "mixers": [
+        "x",
+        "xy_ring"
+      ],
+      "p": [
+        1,
+        2
+      ],
+      "backends": [
+        "generic_line_{n}",
+        "generic_heavyhex_d3",
+        "fake27_snapshot",
+        "generic_all_to_all_{n}"
+      ],
+      "optimization_levels": [
+        1,
+        3
+      ],
+      "seeds": [
+        0,
+        1,
+        2
+      ]
+    }
+  },
+  "config_hash": "f6f28f4430c00601ebc6247ddb0264d8b0cb3508b30a18cbdc3e5e8fcad1be0b",
+  "command": "python -m experiments.run --config experiments/configs/e2_hardware_aware.yaml",
+  "allow_qpu": false,
+  "n_records": 960,
+  "status": "completed",
+  "wall_time_s": 126.70262999999977
+}

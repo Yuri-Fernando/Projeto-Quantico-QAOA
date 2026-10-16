@@ -1,8 +1,8 @@
 import numpy as np
 import pytest
 
-from optimization.instance import build_instance
 from optimization.benders import solve_benders
+from optimization.instance import build_instance
 from optimization.stochastic import solve_stochastic_extensive_form
 
 

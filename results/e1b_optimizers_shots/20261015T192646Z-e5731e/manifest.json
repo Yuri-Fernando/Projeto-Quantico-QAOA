@@ -1,0 +1,118 @@
+{
+  "run_id": "20261015T192646Z-e5731e",
+  "experiment": "e1b_optimizers_shots",
+  "kind": "algorithm_benchmark",
+  "track": "algorithm_benchmark",
+  "timestamp_utc": "2026-10-15T19:26:46.279408+00:00",
+  "git_sha": "fc936b306ae185aba003a6ff2933b24877c54ceb",
+  "git_dirty": false,
+  "python_version": "3.10.8",
+  "platform": "Windows-10-10.0.26300-SP0",
+  "library_versions": {
+    "qiskit": "1.4.6",
+    "qiskit-aer": "0.17.2",
+    "qiskit-algorithms": "0.4.0",
+    "qiskit-optimization": "0.7.0",
+    "qiskit-ibm-runtime": null,
+    "numpy": "2.2.6",
+    "scipy": "1.15.3",
+    "pyomo": "6.10.1",
+    "highspy": "1.15.1"
+  },
+  "devices": {
+    "host": {
+      "platform": "Windows-10-10.0.26300-SP0",
+      "python": "3.10.8",
+      "processor": "Intel64 Family 6 Model 158 Stepping 10, GenuineIntel",
+      "cpu_count_logical": 6,
+      "ram_total_gb": 31.94,
+      "cpu_count_physical": 6
+    },
+    "nvidia_gpus": [
+      {
+        "name": "NVIDIA GeForce RTX 3060 Ti",
+        "memory_total": "8192 MiB",
+        "driver": "617.42"
+      }
+    ],
+    "aer_available_devices": [
+      "CPU"
+    ],
+    "aer_gpu_available": false,
+    "gpu_status": "host_has_nvidia_gpu_but_qiskit_aer_build_is_cpu_only",
+    "qiskit_ibm_runtime_installed": false
+  },
+  "dependency_lock": "requirements-lock.txt",
+  "config": {
+    "experiment": "e1b_optimizers_shots",
+    "kind": "algorithm_benchmark",
+    "track": "algorithm_benchmark",
+    "description": "Sensibilidade a otimizador clássico (COBYLA x SPSA), inicialização, shots e modo do objetivo (expectativa exata x estimativa com shots finitos) em n=8, p=2.\n",
+    "instances": {
+      "domains": [
+        "portfolio"
+      ],
+      "sizes": [
+        8
+      ],
+      "seeds": [
+        0,
+        1
+      ],
+      "k": "half"
+    },
+    "classical": {
+      "seeds": [
+        0
+      ]
+    },
+    "qaoa": {
+      "grid": {
+        "mixer": [
+          "x",
+          "xy_ring"
+        ],
+        "p": [
+          2
+        ],
+        "optimizer": [
+          "cobyla",
+          "spsa"
+        ],
+        "init_strategy": [
+          "linear_ramp",
+          "uniform_small",
+          "random"
+        ],
+        "objective_mode": [
+          "exact",
+          "sampled"
+        ],
+        "shots": [
+          256,
+          1024,
+          4096
+        ]
+      },
+      "seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "maxiter": 150
+    }
+  },
+  "config_hash": "6e68dd520d5da9d625ae88b8322c035f3e892987bddd7ae6bdfbf866f00663c4",
+  "command": "python -m experiments.run --config experiments/configs/e1b_optimizers_shots.yaml",
+  "allow_qpu": false,
+  "n_records": 1450,
+  "status": "completed",
+  "wall_time_s": 160.79091569999946
+}

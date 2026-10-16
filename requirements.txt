@@ -1,5 +1,5 @@
 # Scientific & Quantum Optimization Lab — dependências
-# Testado com Python 3.10.8 em 2026-10-06/07.
+# Testado com Python 3.10.8 em 2026-10-06/07 (v0.2.0) e 2026-10-15 (v0.3.0); versões exatas em requirements-lock.txt.
 #
 # IMPORTANTE (bug real encontrado nesta sessão): não misture qiskit <1.0
 # (qiskit-terra) com pacotes que exigem qiskit >=1.0 no mesmo ambiente —
@@ -10,11 +10,11 @@ numpy>=2.2,<3
 scipy>=1.15,<2
 pandas>=2.2,<3
 matplotlib>=3.9,<4
+pyyaml>=6,<7          # configs de experimentos
 
 # Otimização clássica (LP/MILP/estocástico/Benders)
 pyomo>=6.10,<7
 highspy>=1.15,<2
-ortools>=9.11,<10
 
 # Computação quântica (QUBO/QAOA)
 qiskit>=1.4,<2
@@ -22,5 +22,8 @@ qiskit-aer>=0.17,<1
 qiskit-optimization>=0.7,<1
 qiskit-algorithms>=0.4,<1
 
-# Testes
+# Testes e lint
 pytest>=9.0,<10
+ruff>=0.15
+
+# Opcional: psutil (pico de RSS do processo); qiskit-ibm-runtime (QPU, ver pyproject [qpu])

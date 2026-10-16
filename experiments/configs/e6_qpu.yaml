@@ -1,0 +1,14 @@
+experiment: e6_qpu
+kind: qpu
+track: hardware
+description: >
+  Microexperimento em QPU IBM. Por padrão dry_run (transpila e valida o ISA sem submeter).
+  Sem --allow-qpu nada é chamado; sem credenciais registra BLOCKED_BY_CONFIGURATION.
+qpu:
+  backend_name: ibm_brisbane   # ajustar ao backend disponível na conta
+  n: 4
+  p: 1
+  mixer: x
+  shots: 1000
+  dry_run: true
+  budget: {max_shots_per_job: 1000, max_jobs: 1, max_total_shots: 1000}

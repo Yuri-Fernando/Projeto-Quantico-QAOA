@@ -1,44 +1,40 @@
-# Roadmap — Scientific & Quantum Optimization Lab
+# Roadmap — Quantum–Classical Optimization & Hardware-Aware Benchmark Lab
 
-Nada do plano original da auditoria é descartado aqui — apenas sequenciado. Itens fora de escopo desta rodada ficam explicitamente marcados como "depois".
+Nada do plano anterior foi descartado — apenas resequenciado pela auditoria de 2026-10-15
+(prioridade: comparação metodologicamente correta antes de hardware). Estado verificável em
+`specs/hardware-aware-lab/tasks.md`.
 
 ## Fase 0 — Rascunho (concluída, ago/2025)
+- [x] Toy problem de seleção de portfólio via QUBO+QAOA (preservado em `legacy/v1/`).
 
-- [x] Toy problem de seleção de portfólio via QUBO+QAOA (v1, preservado intacto).
+## Fase 1 — MVP comparativo de modelos (concluída, v0.2.0, 2026-10-07)
+- [x] LP, MILP, estocástico de 2 estágios, Benders e QUBO/QAOA na mesma instância; 14 testes.
+- [x] Reclassificada na v0.3.0 como trilha `model_comparison` (objetivos diferentes).
 
-## Fase 1 — MVP comparativo clássico vs quântico (concluída, 2026-10-07)
+## Fase 2 — Benchmark justo e engenharia do QAOA (concluída, v0.3.0, 2026-10-15)
+- [x] Problema canônico, QUBO/Ising auditáveis, MILP McCormick e heurísticas no MESMO objetivo (E0: 50/50).
+- [x] Mixer X + penalidade × XY + Dicke; otimizadores, inicialização, shots, penalidade (E1, E1b, E1c).
+- [x] Escala até n=20 em simulação (E4); segundo domínio industrial sintético (E7).
 
-- [x] Instância compartilhada (`optimization/instance.py`) com duas métricas de risco.
-- [x] LP (relaxação linear, `scipy.optimize.linprog`).
-- [x] MILP (Pyomo + HiGHS).
-- [x] Programação estocástica de 2 estágios com cenários e recurso real (forma extensiva).
-- [x] Decomposição de Benders real (loop de cortes, não wrapper de solver).
-- [x] QUBO/QAOA consertado (API do Qiskit atualizada) e integrado à mesma instância.
-- [x] Benchmark real (`benchmarks/compare_methods.py`) com números medidos.
-- [x] 14 testes cobrindo os 5 métodos.
+## Fase 3 — Hardware-aware em simulação (concluída, v0.3.0)
+- [x] Transpilation para backends fake: SWAPs, portas 2Q, profundidade, layout, Target (E2).
+- [x] Regimes de ruído e backends fake sob protocolo de transferência (E3).
 
-## Fase 2 — Escala e robustez (próxima)
+## Fase 4 — Recursos reais (pendente de recurso externo)
+- [ ] GPU: executar E5 num host Linux com `qiskit-aer-gpu` + CUDA (aqui o Aer é só CPU).
+- [ ] QPU: instalar `qiskit-ibm-runtime`, credenciais fora do Git, rodar E6 com `--allow-qpu`
+      (dry-run primeiro; job real só com orçamento autorizado).
+- [ ] CI: primeira execução do workflow após push.
 
-- [ ] Expandir a instância para mais ativos (ex.: 6–10) e medir como cada método escala.
-- [ ] Adicionar um segundo problema do mesmo "esqueleto" (scheduling ou energy dispatch) resolvido pelos mesmos 5 métodos, para generalizar a comparação além de portfólio.
-- [ ] Benders com master inteiro (branch-and-cut com cortes de Benders, não apenas relaxação contínua).
-- [ ] Explorar CVXPY e/ou Julia-JuMP como alternativa de modelagem (opcional, mencionado na auditoria).
+## Fase 5 — Próximos experimentos (planejada)
+- [ ] Otimização variacional SOB ruído (não só transferência).
+- [ ] Mitigação de erro (ex.: leitura) como experimento separado, com overhead medido.
+- [ ] Mixers com menor custo de compilação (XY em pares paralelos, ordem compatível com a topologia).
+- [ ] Penalidade adaptativa (ρ próximo do crítico estimado sem enumeração).
+- [ ] Benders com master inteiro (trilha `model_comparison`).
 
-## Fase 3 — SDDP/PDDE (depois, fora de escopo nesta rodada)
-
-- [ ] Programação dinâmica estocástica dual (SDDP) para o problema multiestágio (a versão atual é de 2 estágios apenas).
-- [ ] Comparar SDDP vs Benders de 2 estágios vs forma extensiva em termos de escalabilidade.
-
-## Fase 4 — HPC / paralelização real (depois, fora de escopo nesta rodada)
-
-- [ ] Paralelizar a resolução dos subproblemas de Benders por cenário com `multiprocessing`, Dask ou Ray (não foi necessário na escala atual — 8 cenários resolvem em milissegundos).
-- [ ] Profiling real (cProfile/line_profiler) nos métodos antes de qualquer paralelização, para evitar otimização prematura.
-
-## Fase 5 — Port para C++/OpenMP (depois, fora de escopo nesta rodada)
-
-- [ ] Identificar o(s) subproblema(s) mais custosos computacionalmente em escala maior.
-- [ ] Portar apenas esses trechos para C++ com OpenMP, mantendo a API Python como camada de orquestração.
-
-## Fase 6 — Hardware quântico real (depois, não comprometido)
-
-- [ ] Rodar o mesmo QUBO em um backend real via IBM Quantum (ou simulador com ruído), documentando honestamente overhead de fila, erro de hardware e qualquer (não-)vantagem observada.
+## Depois / não priorizado (auditoria §11)
+- [ ] SDDP/PDDE multiestágio.
+- [ ] Paralelização (multiprocessing/Dask/Ray) — só após profiling indicar gargalo real.
+- [ ] Port C++/OpenMP — idem.
+- [ ] Interface web — depois de dados e estatística estáveis.

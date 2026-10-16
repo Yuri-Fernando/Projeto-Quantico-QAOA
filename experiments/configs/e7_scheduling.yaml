@@ -1,0 +1,27 @@
+experiment: e7_scheduling
+kind: algorithm_benchmark
+track: algorithm_benchmark
+description: >
+  Segundo domínio (seleção de tarefas por turno com conflito de recursos): clássicos exatos,
+  heurísticas e QAOA no MESMO objetivo, 10 seeds x 3 instâncias.
+instances:
+  domains: [shift_scheduling]
+  sizes: [6, 8, 10, 12]
+  seeds: [0, 1, 2]
+  k: half
+classical:
+  seeds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+  random_samples: 1024
+qaoa:
+  grid:
+    mixer: [x, xy_ring]
+    p: [1, 2, 3]
+    optimizer: [cobyla]
+    init_strategy: [linear_ramp, random]
+    shots: [1024]
+  seeds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+  maxiter: 300
+quick:
+  instances: {sizes: [6], seeds: [0]}
+  classical: {seeds: [0]}
+  qaoa: {grid: {p: [1]}, seeds: [0], maxiter: 30}

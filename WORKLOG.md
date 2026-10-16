@@ -45,3 +45,34 @@ Item #2 de prioridade da auditoria de portfólio (depois do ArgusAI, já conclu�
 ## Commits
 
 Ver `git log` — commits incrementais em português (`feat:`/`docs:`/`chore:`), sem `git push`.
+
+---
+
+# Worklog — sessão de implementação da auditoria (2026-10-15)
+
+Entrada: auditoria técnica sobre o commit `c894c73` (documento privado, não versionado). Branch:
+`feat/fair-qubo-benchmark`. Baseline antes de qualquer mudança: `pytest` → 14 passed (17,13 s).
+
+## Diagnóstico do ambiente
+- Python 3.10.8; Qiskit 1.4.6, qiskit-aer 0.17.2, qiskit-optimization 0.7.0, qiskit-algorithms 0.4.0.
+- `AerSimulator().available_devices() == ('CPU',)`; `nvidia-smi` mostra RTX 3060 Ti → GPU existe, mas o
+  Aer instalado não a usa. `qiskit-ibm-runtime` ausente. Nada foi instalado.
+- Fake backends: `GenericBackendV2` (topologia livre) e `Fake27QPulseV1` (deprecated, sai no Qiskit 2.0).
+
+## Achados reais (não plantados)
+1. Suspeita da auditoria confirmada: `legacy/v1/portfolio_qaoa.py::build_qubo` conta em dobro o termo
+   cruzado da penalidade (diferença exata `2ρ Σ_{i<j} x_i x_j`, teste via `ast` sem importar o Qiskit antigo).
+2. `NoiseModel.to_dict()` inclui `id` aleatório por erro → hash instável; corrigido removendo os ids.
+3. Qiskit 1.4.6: `Layout.initial_index_layout(filter_ancillas=True)` levanta `IndexError` (heavy-hex 19q,
+   nível 1, seed 0, n=8). Derrubou E2/E3 na primeira rodada; contornado + teste de regressão; reexecutados.
+4. Pseudo-replicação: com inicialização determinística e objetivo exato, 10 seeds = 1 otimização. A
+   análise passou a remover réplicas idênticas e as configs ganharam inicialização aleatória seedada.
+5. A primeira execução do E4 terminou sem traceback nem manifest no meio de n=18 (pico de RSS 287 MB);
+   o caso isolado não reproduz e a reexecução com `-X faulthandler` passou do mesmo ponto. Causa não
+   identificada; a execução interrompida foi preservada em `results/_failed_runs/`.
+6. Penalidade segura é ~28× maior que a crítica, em média, no portfólio (E0); reduzi-la melhora P(ótimo)
+   com mixer X (E1c).
+7. XY + Dicke vence no ideal mas custa ~3,6× portas 2Q após roteamento e perde a vantagem sob ruído (E2/E3).
+
+## Validação
+- Ver contagem final de testes, lint e execuções no CHANGELOG [0.3.0] e em `results/*/*/manifest.json`.

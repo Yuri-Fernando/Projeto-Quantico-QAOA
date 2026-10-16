@@ -1,0 +1,73 @@
+{
+  "run_id": "20261015T192247Z-47dd1d",
+  "experiment": "e5_gpu",
+  "kind": "devices",
+  "track": "hpc",
+  "timestamp_utc": "2026-10-15T19:22:47.701588+00:00",
+  "git_sha": "fc936b306ae185aba003a6ff2933b24877c54ceb",
+  "git_dirty": false,
+  "python_version": "3.10.8",
+  "platform": "Windows-10-10.0.26300-SP0",
+  "library_versions": {
+    "qiskit": "1.4.6",
+    "qiskit-aer": "0.17.2",
+    "qiskit-algorithms": "0.4.0",
+    "qiskit-optimization": "0.7.0",
+    "qiskit-ibm-runtime": null,
+    "numpy": "2.2.6",
+    "scipy": "1.15.3",
+    "pyomo": "6.10.1",
+    "highspy": "1.15.1"
+  },
+  "devices": {
+    "host": {
+      "platform": "Windows-10-10.0.26300-SP0",
+      "python": "3.10.8",
+      "processor": "Intel64 Family 6 Model 158 Stepping 10, GenuineIntel",
+      "cpu_count_logical": 6,
+      "ram_total_gb": 31.94,
+      "cpu_count_physical": 6
+    },
+    "nvidia_gpus": [
+      {
+        "name": "NVIDIA GeForce RTX 3060 Ti",
+        "memory_total": "8192 MiB",
+        "driver": "617.42"
+      }
+    ],
+    "aer_available_devices": [
+      "CPU"
+    ],
+    "aer_gpu_available": false,
+    "gpu_status": "host_has_nvidia_gpu_but_qiskit_aer_build_is_cpu_only",
+    "qiskit_ibm_runtime_installed": false
+  },
+  "dependency_lock": "requirements-lock.txt",
+  "config": {
+    "experiment": "e5_gpu",
+    "kind": "devices",
+    "track": "hpc",
+    "description": "CPU x GPU no Qiskit Aer (statevector) no MESMO circuito. GPU só é executada se AerSimulator().available_devices() contiver GPU; caso contrário registra \"not_executed\".\n",
+    "devices": {
+      "sizes": [
+        10,
+        14,
+        18,
+        22
+      ],
+      "targets": [
+        "CPU",
+        "GPU"
+      ],
+      "shots": 1024,
+      "repeats": 3,
+      "method": "statevector"
+    }
+  },
+  "config_hash": "6509ab1b2faae5c9c5bc96946a5c8b6653635bed2e8b316bac17200160f3fbee",
+  "command": "python -m experiments.run --config experiments/configs/e5_gpu.yaml",
+  "allow_qpu": false,
+  "n_records": 9,
+  "status": "completed",
+  "wall_time_s": 20.390078899999935
+}

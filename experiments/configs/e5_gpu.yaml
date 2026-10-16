@@ -1,0 +1,14 @@
+experiment: e5_gpu
+kind: devices
+track: hpc
+description: >
+  CPU x GPU no Qiskit Aer (statevector) no MESMO circuito. GPU só é executada se
+  AerSimulator().available_devices() contiver GPU; caso contrário registra "not_executed".
+devices:
+  sizes: [10, 14, 18, 22]
+  targets: [CPU, GPU]
+  shots: 1024
+  repeats: 3
+  method: statevector
+quick:
+  devices: {sizes: [8], repeats: 1}
